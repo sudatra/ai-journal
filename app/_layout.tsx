@@ -8,20 +8,23 @@ import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 
 import { tamaguiConfig } from '../tamagui.config'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
 
   return (
-    <ClerkProvider tokenCache={tokenCache}>
-      <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
-        </ThemeProvider>
-      </TamaguiProvider>
-    </ClerkProvider>
+    <SafeAreaProvider>
+      <ClerkProvider tokenCache={tokenCache}>
+        <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+          </ThemeProvider>
+        </TamaguiProvider>
+      </ClerkProvider>
+    </SafeAreaProvider>
   )
 }
