@@ -1,5 +1,5 @@
 
-import Logo from "@/components/Logo";
+import Logo from "@/components/logo";
 import { useModal } from "@/contexts/ModalContext";
 import { useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
