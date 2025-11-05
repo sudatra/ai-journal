@@ -1,6 +1,6 @@
 
 import Logo from "@/components/logo";
-import { useModal } from "@/contexts/ModalContext";
+import { useModal } from "@/context/ModalContext";
 import { useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import * as React from "react";
@@ -27,6 +27,7 @@ export default function SignUpScreen() {
   const [pendingVerification, setPendingVerification] = React.useState(false);
   const [code, setCode] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  
   const { showModal } = useModal();
 
   const onSignUpPress = async () => {

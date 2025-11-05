@@ -1,5 +1,5 @@
 import { AlertTriangle, Info } from "@tamagui/lucide-icons";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogOverlay, AlertDialogTitle, Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogTitle, XStack, YStack } from "tamagui";
 
 type ModalType = 'alert' | 'dialog';
@@ -8,7 +8,7 @@ interface ModalConfig {
   type: ModalType;
   title: string;
   description?: string;
-  content: ReactNode;
+  content?: ReactNode;
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
   confirmText?: string;
@@ -244,3 +244,12 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     </ModalContext.Provider>
   )
 }
+
+export const useModal = () => {
+  const context = useContext(ModalContext);
+  if(!context) {
+    throw new Error("useModal must be used within ModalProvider");
+  }
+
+  return context;
+};

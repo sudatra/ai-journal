@@ -1,6 +1,6 @@
 import Logo from "@/components/logo";
 import SignInWithGoogle from "@/components/SignInWithGoogle";
-import { useModal } from "@/contexts/ModalContext";
+import { useModal } from "@/context/ModalContext";
 import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
 import { ClerkAPIResponseError } from "@clerk/types";
 import { Link, useRouter } from "expo-router";
@@ -19,7 +19,7 @@ import {
   YStack,
 } from "tamagui";
 
-export default function Page() {
+export default function SignInScreen() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
 
@@ -146,7 +146,7 @@ export default function Page() {
             <Paragraph color="$color" opacity={0.7}>
               Don&apos;t have an account?
             </Paragraph>
-            <Link href="/sign-up" asChild>
+            <Link href={'/sign-up'} asChild>
               <Button
                 variant="outlined"
                 size="$3"
@@ -156,7 +156,7 @@ export default function Page() {
                 Sign Up
               </Button>
             </Link>
-          </XStack>
+          </XStack> 
         </YStack>
       </ScrollView>
     </SafeAreaView>
