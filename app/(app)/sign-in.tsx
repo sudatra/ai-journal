@@ -1,5 +1,5 @@
-import Logo from "@/components/logo";
-import SignInWithGoogle from "@/components/SignInWithGoogle";
+import SignInWithGoogle from "@/components/app/SignInWithGoogle";
+import Logo from "@/components/misc/logo";
 import { useModal } from "@/context/ModalContext";
 import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
 import { ClerkAPIResponseError } from "@clerk/types";
@@ -128,6 +128,7 @@ export default function SignInScreen() {
                 bg="#904BFF"
                 color="white"
                 borderColor="#904BFF"
+                mb={'$3'}
                 onPress={onSignInPress}
                 disabled={!isLoaded || isLoading}
                 opacity={!isLoaded || isLoading ? 0.5 : 1}
