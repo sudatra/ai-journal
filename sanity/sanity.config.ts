@@ -8,7 +8,7 @@ export default defineConfig({
   title: 'ai-journal',
 
   projectId: 'mjdb0skg',
-  dataset: 'production',
+  dataset: 'development',
 
   plugins: [structureTool(), visionTool()],
 
