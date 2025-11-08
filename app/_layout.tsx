@@ -2,24 +2,27 @@ import '../tamagui-web.css'
 
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { useColorScheme } from 'react-native'
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { TamaguiProvider } from 'tamagui'
 
 import { ModalProvider } from '@/context/ModalContext'
+import { Slot } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { tamaguiConfig } from '../tamagui.config'
-import { Slot } from 'expo-router'
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <SafeAreaProvider>
+      <StatusBar 
+        style="dark" 
+        backgroundColor="#ffffff" 
+      />
+
       <ClerkProvider tokenCache={tokenCache}>
-        <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+        <TamaguiProvider config={tamaguiConfig} defaultTheme='light'>
           <ModalProvider>
-            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <ThemeProvider value={DefaultTheme}>
               <Slot />
             </ThemeProvider>
           </ModalProvider>
