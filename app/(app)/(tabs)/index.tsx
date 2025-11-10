@@ -1,3 +1,4 @@
+import Logo from '@/components/misc/logo';
 import { useStreaks } from '@/hooks/use-streaks';
 import { formatUppercaseDate, getTimeOfDayGreeting } from '@/lib/utils/date';
 import { getUserFirstName } from '@/lib/utils/user';
@@ -5,7 +6,7 @@ import { useUser } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Spinner, Text, View } from 'tamagui';
+import { Card, ScrollView, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
 export default function HomeScreen() {
   const { user, isLoaded } = useUser();
@@ -39,7 +40,116 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>HomeScreen</Text>
+      <ScrollView
+        px={'$4'}
+        style={{
+          ...styles.container,
+          paddingTop: insets.top
+        }}
+      >
+        <YStack
+          gap={'$2'}
+          mt={'$4'}
+          mb={'$1.5'}
+          style={{ alignItems: 'center' }}
+        >
+          <Logo />
+          <Text
+            fontSize={'$2'}
+            color={'$color10'}
+            fontWeight={'500'}
+            textTransform='uppercase'
+          >
+            {formattedDate}
+          </Text>
+        </YStack>
+
+        <YStack
+          gap={'$2'}
+          mb={'$4'}
+          style={{ alignItems: 'center' }}
+        >
+          <Text
+            fontSize={'$8'}
+            color={'$color12'}
+            fontWeight={'600'}
+            style={{ alignItems: 'center' }}
+          >
+            {greeting}, {userName}
+          </Text>
+        </YStack>
+
+        <XStack
+          mb={'$6'}
+          style={{justifyContent: 'space-between' }}
+        >
+          {
+            Array.from({ length: 7 }, (_, i) => {
+              const startOfWeek = new Date(now);
+              startOfWeek.setDate(now.getDate() - now.getDay() + i);
+
+              const dayData = {
+                dayName: startOfWeek.toLocaleDateString('en-US', {
+                  weekday: 'short'
+                }),
+                dayNumber: startOfWeek.getDate(),
+                isToday: startOfWeek.toDateString() === now.toDateString()
+              };
+
+              return (
+                <YStack
+                  key={i}
+                  gap={'$1'}
+                  style={{ alignItems: 'center' }}
+                >
+                  <Text
+                    fontSize={'$2'}
+                    color={'$color10'}
+                    fontWeight={'500'}
+                  >
+                    {dayData.dayName}
+                  </Text>
+
+                  <View
+                    style={[
+                      styles.dayCircle,
+                      dayData.isToday && styles.todayCircle
+                    ]}
+                  >
+                    <Text
+                      fontSize={'$3'}
+                      color={dayData.isToday ? 'white' : '$color11'}
+                      fontWeight={dayData.isToday ? '600' : '400'}
+                    >
+                      {dayData.dayNumber}
+                    </Text>
+                  </View>
+                </YStack>
+              )
+            })
+          }
+        </XStack>
+
+        {
+          streaksLoading && (
+            <YStack
+              gap={'$3'}
+              mb={'$6'}
+            >
+              <Card
+                elevate
+                size="$4"
+                bordered
+                bg="$background"
+                borderColor="$borderColor"
+                padding="$5"
+              >
+                
+              </Card>
+            </YStack>
+          )
+        }
+      </ScrollView>
     </View>
   );
 }
