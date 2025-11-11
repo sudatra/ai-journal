@@ -1,4 +1,5 @@
 import Logo from '@/components/misc/logo';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useStreaks } from '@/hooks/use-streaks';
 import { formatUppercaseDate, getTimeOfDayGreeting } from '@/lib/utils/date';
 import { getUserFirstName } from '@/lib/utils/user';
@@ -131,7 +132,7 @@ export default function HomeScreen() {
         </XStack>
 
         {
-          streaksLoading && (
+          !streaksLoading && (
             <YStack
               gap={'$3'}
               mb={'$6'}
@@ -144,8 +145,142 @@ export default function HomeScreen() {
                 borderColor="$borderColor"
                 padding="$5"
               >
-                
+                <XStack style={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <YStack
+                    gap={'$2'}
+                    style={{ alignItems: 'center' }}
+                    flex={1}
+                  >
+                    <Text
+                      fontSize={'$2'}
+                      color={'$color10'}
+                      fontWeight={'600'}
+                    >
+                      CURRENT STREAK
+                    </Text>
+
+                    <XStack
+                      gap={'$2'}
+                      style={{ alignItems: 'baseline' }}
+                    >
+                      <Text
+                        fontSize={'$2'}
+                        color={'$color12'}
+                        fontWeight={'700'}
+                      >
+                        {currentStreak}
+                      </Text>
+
+                      <Text
+                        fontSize={'$5'}
+                        color={'$color11'}
+                        fontWeight={'500'}
+                      >
+                        {currentStreak === 1 ? 'day' : 'days'}
+                      </Text>
+                    </XStack>
+
+                    <View style={{ marginTop: 4 }}>
+                      <IconSymbol 
+                        size={32}
+                        name={isActive ? 'flame.fill' : 'zzz'}
+                        color={isActive ? "#f59e0b" : "#9ca3af"}
+                      />
+                    </View>
+                  </YStack>
+
+                  <View style={{
+                    width: 1,
+                    height: 60,
+                    backgroundColor: "#e5e7eb",
+                    marginHorizontal: 16
+                  }} />
+
+                  <YStack
+                    gap={'$2'}
+                    style={{ alignItems: 'center' }}
+                    flex={1}
+                  >
+                    <Text
+                      fontSize={'$2'}
+                      color={'$color10'}
+                      fontWeight={'600'}
+                    >
+                      CURRENT STREAK
+                    </Text>
+
+                    <XStack
+                      gap={'$2'}
+                      style={{ alignItems: 'baseline' }}
+                    >
+                      <Text
+                        fontSize={'$2'}
+                        color={'$color12'}
+                        fontWeight={'700'}
+                      >
+                        {currentStreak}
+                      </Text>
+
+                      <Text
+                        fontSize={'$5'}
+                        color={'$color11'}
+                        fontWeight={'500'}
+                      >
+                        {currentStreak === 1 ? 'day' : 'days'}
+                      </Text>
+                    </XStack>
+
+                    <View style={{ marginTop: 4 }}>
+                      <IconSymbol 
+                        size={32}
+                        name={'trophy.fill'}
+                        color="#fbbf24"
+                      />
+                    </View>
+                  </YStack>
+                </XStack>
               </Card>
+
+              <YStack
+                gap={'$2'}
+                style={{ alignItems: 'center' }}
+                pt={'$2'}
+              >
+                <Text
+                  fontSize={'$4'}
+                  color={'$color11'}
+                  fontWeight={'500'}
+                  style={{ textAlign: 'center' }}
+                >
+                  {statusMessage}
+                </Text>
+
+                {
+                  daysUntilNextMilestone > 0 && (
+                    <XStack
+                      gap={'$2'}
+                      style={{ alignItems: 'center' }}
+                    >
+                      <IconSymbol 
+                        size={32}
+                        name={'target'}
+                        color="#6b7280"
+                      />
+
+                      <Text
+                        fontSize={'$3'}
+                        color={'$color10'}
+                      >
+                        {daysUntilNextMilestone} days until {nextMilestone}-day
+                        milestone!
+                      </Text>
+                    </XStack>
+                  )
+                }
+              </YStack>
             </YStack>
           )
         }
