@@ -5,7 +5,7 @@ import { formatUppercaseDate, getTimeOfDayGreeting } from '@/lib/utils/date';
 import { getUserFirstName } from '@/lib/utils/user';
 import { useUser } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Card, ScrollView, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
@@ -284,6 +284,83 @@ export default function HomeScreen() {
             </YStack>
           )
         }
+
+        <YStack
+          gap={'$3'}
+          mb={'$6'}
+        >
+          <Pressable
+            onPress={() => router.push('/')}
+            style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Card
+              elevate
+              size="$4"
+              bordered
+              bg="$purple9"
+              borderColor="$purple9"
+              padding="$4"
+            >
+              <XStack
+                gap={'$3'}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <IconSymbol 
+                  size={24}
+                  name={'plus.circle.fill'}
+                  color="white"
+                />
+
+                <Text
+                  fontSize={'$5'}
+                  color={'white'}
+                  fontWeight={'600'}
+                >
+                  Add New Entry
+                </Text>
+              </XStack>
+            </Card>
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push('/')}
+            style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
+          >
+            <Card
+              elevate
+              size="$4"
+              bordered
+              bg="white"
+              borderColor="$borderColor"
+              padding="$4"
+            >
+              <XStack
+                gap={'$3'}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <IconSymbol 
+                  size={24}
+                  name={'book.fill'}
+                  color="#904BFF"
+                />
+
+                <Text
+                  fontSize={'$5'}
+                  color={'$color12'}
+                  fontWeight={'600'}
+                >
+                  View Entries
+                </Text>
+              </XStack>
+            </Card>
+          </Pressable>
+        </YStack>
       </ScrollView>
     </View>
   );
