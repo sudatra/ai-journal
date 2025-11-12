@@ -1,5 +1,3 @@
-
-
 import {BulbOutlineIcon} from '@sanity/icons'
 import {defineField, defineType} from 'sanity'
 
