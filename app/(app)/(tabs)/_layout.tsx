@@ -67,7 +67,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol 
               size={28} 
-              name="paperplane.fill" 
+              name="heart.fill" 
               color={color} 
             />
           )
@@ -81,7 +81,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <IconSymbol 
               size={28} 
-              name="paperplane.fill" 
+              name="person.fill" 
               color={color} 
             />
           )

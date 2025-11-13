@@ -210,7 +210,7 @@ export default function HomeScreen() {
                       color={'$color10'}
                       fontWeight={'600'}
                     >
-                      CURRENT STREAK
+                      BEST STREAK
                     </Text>
 
                     <XStack
@@ -222,7 +222,7 @@ export default function HomeScreen() {
                         color={'$color12'}
                         fontWeight={'700'}
                       >
-                        {currentStreak}
+                        {longestStreak}
                       </Text>
 
                       <Text
@@ -230,7 +230,7 @@ export default function HomeScreen() {
                         color={'$color11'}
                         fontWeight={'500'}
                       >
-                        {currentStreak === 1 ? 'day' : 'days'}
+                        {longestStreak === 1 ? 'day' : 'days'}
                       </Text>
                     </XStack>
 
@@ -293,7 +293,7 @@ export default function HomeScreen() {
           mb={'$6'}
         >
           <Pressable
-            onPress={() => router.push('/')}
+            onPress={() => router.push('/new-entry')}
             style={({ pressed }) => [{ opacity: pressed ? 0.8 : 1 }]}
           >
             <Card
