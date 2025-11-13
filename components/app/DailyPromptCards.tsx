@@ -41,7 +41,7 @@ const DailyPromptCards = () => {
 
   const handlePromptPress = (prompt: DailyPrompt) => {
     router.push({
-      pathname: "/",
+      pathname: "/new-entry",
       params: {
         promptTitle: prompt.title,
         promptText: prompt.prompt,
