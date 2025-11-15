@@ -1,10 +1,10 @@
 
+import JournalEntryForm from '@/components/app/JournalEntryForm';
 import { createJournalEntry } from '@/lib/sanity/journal';
 import { router, useLocalSearchParams } from 'expo-router'
 import React from 'react'
 import { Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View } from 'tamagui'
 
 const NewEntryScreen = () => {
   const params = useLocalSearchParams();
