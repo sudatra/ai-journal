@@ -1,4 +1,5 @@
 
+import CreateEntryButton from '@/components/app/CreateEntryButton';
 import { fetchJournalEntries } from '@/lib/sanity/journal';
 import { USER_JOURNAL_ENTRIES_QUERYResult } from '@/sanity/sanity.types';
 import { useUser } from '@clerk/clerk-expo';
