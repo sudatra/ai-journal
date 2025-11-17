@@ -46,6 +46,11 @@ const EntriesScreen = () => {
     loadEntries();
   }, [user?.id]);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadEntries();
+  };
+
   const groupEntriesByDate = (entries: USER_JOURNAL_ENTRIES_QUERYResult): GroupedEntries => {
     return entries.reduce((groups: GroupedEntries, entry) => {
       const dateObj = new Date(entry.createdAt ?? new Date());
