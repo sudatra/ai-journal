@@ -1,11 +1,13 @@
 
 import CreateEntryButton from '@/components/app/CreateEntryButton';
+import { getMoodConfig } from '@/lib/constants/moods';
 import { fetchJournalEntries } from '@/lib/sanity/journal';
 import { USER_JOURNAL_ENTRIES_QUERYResult } from '@/sanity/sanity.types';
 import { useUser } from '@clerk/clerk-expo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet } from 'react-native'
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text, View } from 'tamagui'
 
@@ -96,9 +98,131 @@ const EntriesScreen = () => {
     )
   }
 
+  const groupedEntries = groupEntriesByDate(entries);
+  const sortedGroupedEntries = Object.entries(groupedEntries).sort(
+    ([dateA], [dateB]) => {
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    }
+  );
+
   return (
-    <View>
-      <Text>entries</Text>
+    <View
+      bg='$background'
+      style={styles.container}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.contentContainer,
+          { paddingTop: insets.top + 20 },
+        ]}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <Text style={styles.title}>Your Journal</Text>
+
+        {
+          sortedGroupedEntries.map(([date, dayEntries]) => {
+            const sortedDayEntries = [...dayEntries].sort(
+              (a, b) =>
+                new Date(b.createdAt ?? new Date()).getTime() -
+                new Date(a.createdAt ?? new Date()).getTime()
+            );
+
+            return (
+              <View
+                key={date}
+                style={styles.dayGroup}
+              >
+                <Text style={styles.dateHeader}>
+                  {
+                    new Date(date + "T00:00:00Z").toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      timeZone: "UTC",
+                    })
+                  }
+                </Text>
+
+                {
+                  sortedDayEntries.map((entry) => {
+                    const moodConfig = getMoodConfig(entry.mood ?? "neutral");
+                    const firstBlock = entry.content?.[0];
+                    const preview =(
+                      firstBlock && "children" in firstBlock
+                      ? firstBlock.children?.[0]?.text?.slice(0, 100)
+                      : null
+                    ) ?? "No content";
+
+                    return (
+                      <View
+                        key={entry._id}
+                        style={styles.entryCardContainer}
+                      >
+                        <TouchableOpacity
+                          style={styles.entryCard}
+                          onPress={() => handleEntryPress(entry._id)}
+                        >
+                          <View style={styles.entryHeader}>
+                            <Text>
+                              {
+                                entry.title ?? new Date(entry.createdAt ?? new Date()).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              }
+                            </Text>
+
+                            <View style={styles.entryActions}>
+                              <MaterialIcons
+                                size={20}
+                                name={moodConfig.icon as any}
+                                color={moodConfig.color}
+                              />
+                              <Text
+                                style={[
+                                  styles.moodLabel,
+                                  { color: moodConfig.color },
+                                ]}
+                              >
+                                {moodConfig.label}
+                              </Text>
+                            </View>
+                          </View>
+
+                          <Text style={styles.entryPreview}>
+                            {preview}
+                            {preview.length >= 100 ? "..." : ""}
+                          </Text>
+
+                          {
+                            entry.aiGeneratedCategory && (
+                              <View
+                                style={[
+                                  styles.categoryTag,
+                                  {
+                                    backgroundColor:
+                                      entry.aiGeneratedCategory.color || "#e1e5e9",
+                                  },
+                                ]}
+                              >
+                                <Text style={styles.categoryText}>
+                                  {entry.aiGeneratedCategory.title}
+                                </Text>
+                              </View>
+                            )
+                          }
+                        </TouchableOpacity>
+                      </View>
+                    )
+                  })
+                }
+              </View>
+            )
+          })
+        }
+      </ScrollView>
     </View>
   )
 }
