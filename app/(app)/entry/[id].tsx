@@ -1,9 +1,10 @@
 
+import { deleteJournalEntry, getJournalEntryById } from '@/lib/sanity/journal';
 import { JOURNAL_ENTRY_BY_ID_QUERYResult } from '@/sanity/sanity.types';
 import { useUser } from '@clerk/clerk-expo';
-import { useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, View } from 'tamagui'
 
 const EntryScreen = () => {
@@ -13,6 +14,112 @@ const EntryScreen = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if(!id) {
+      return;
+    }
+
+    const loadEntry = async () => {
+      try {
+        const fetchedEntry = await getJournalEntryById(id);
+
+        if(fetchedEntry) {
+          setEntry(fetchedEntry);
+        } 
+        else {
+          setError("Entry not found");
+        }
+      }
+      catch (err) {
+        console.error("Failed to load entry:", err);
+        setError("Failed to load entry");
+      } 
+      finally {
+        setLoading(false);
+      }
+    };
+
+    loadEntry();
+  }, [id]);
+
+  if(loading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#904BFF" />
+      </View>
+    );
+  }
+
+  if(error || !entry) {
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorTitle}>Oops!</Text>
+        <Text style={styles.errorText}>
+          {error || "Something went wrong loading this entry."}
+        </Text>
+
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backButtonText}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const handleEdit = () => {
+    if(!id) {
+      return;
+    }
+
+    router.push(`/edit-entry/${id}`);
+  };
+
+  const handleDelete = () => {
+    if(!id || !entry){
+      return;
+    }
+
+    Alert.alert(
+      "Delete Entry?",
+      "Are you sure you want to delete this journal entry? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: confirmDelete,
+        },
+      ]
+    );
+  };
+
+  const confirmDelete = async () => {
+    if(!id) {
+      return;
+    }
+
+    setDeleting(true);
+
+    try {
+      await deleteJournalEntry(id);
+      router.dismissAll();
+    } 
+    catch (error) {
+      console.error("Failed to delete journal entry:", error);
+      Alert.alert(
+        "Error",
+        "Failed to delete your journal entry. Please try again."
+      );
+    }
+    finally {
+      setDeleting(false);
+    }
+  };
+
+  const canEdit = user?.id === entry?.userId;
 
   return (
     <View>
