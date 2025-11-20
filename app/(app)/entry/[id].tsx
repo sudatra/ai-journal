@@ -4,8 +4,9 @@ import { JOURNAL_ENTRY_BY_ID_QUERYResult } from '@/sanity/sanity.types';
 import { useUser } from '@clerk/clerk-expo';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, View } from 'tamagui'
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button, Text, View, XStack } from 'tamagui'
 
 const EntryScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -122,9 +123,69 @@ const EntryScreen = () => {
   const canEdit = user?.id === entry?.userId;
 
   return (
-    <View>
-      <Text>EntryScreen</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+      >
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.backButtonTop}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.backButtonTopText}>← Back to Journal</Text>
+          </TouchableOpacity>
+
+          {
+            canEdit && (
+              <XStack gap="$2">
+                <Button
+                  size="$3"
+                  borderWidth={1}
+                  borderColor="$purple9"
+                  bg="transparent"
+                  color="$purple9"
+                  pressStyle={{
+                    bg: "$purple2",
+                    borderColor: "$purple10",
+                  }}
+                  onPress={handleEdit}
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  size="$3"
+                  borderWidth={1}
+                  borderColor="$red9"
+                  bg="transparent"
+                  color="$red9"
+                  pressStyle={{
+                    bg: "$red2",
+                    borderColor: "$red10",
+                  }}
+                  onPress={handleDelete}
+                  disabled={deleting}
+                >
+                  {deleting ? "Deleting..." : "Delete"}
+                </Button>
+              </XStack>
+            )
+          }
+        </View>
+
+        <Text style={styles.timeText}>
+          {
+            new Date(entry.createdAt ?? new Date()).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          }
+        </Text>
+
+        <JournalEntryDisplay entry={entry} />
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
