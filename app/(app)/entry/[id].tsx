@@ -1,4 +1,5 @@
 
+import JournalEntryDisplay from '@/components/app/JournalEntryDisplay';
 import { deleteJournalEntry, getJournalEntryById } from '@/lib/sanity/journal';
 import { JOURNAL_ENTRY_BY_ID_QUERYResult } from '@/sanity/sanity.types';
 import { useUser } from '@clerk/clerk-expo';
