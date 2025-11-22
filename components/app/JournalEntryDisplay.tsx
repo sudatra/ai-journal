@@ -1,5 +1,10 @@
 
+import { getMoodConfig } from '@/lib/constants/moods';
+import { urlFor } from '@/lib/sanity/client';
 import { JOURNAL_ENTRY_BY_ID_QUERYResult } from '@/sanity/sanity.types';
+import { PortableText } from "@portabletext/react-native";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Image } from 'expo-image';
 import React from 'react'
 import { StyleSheet } from 'react-native';
 import { Text, View } from 'tamagui'
@@ -9,9 +14,143 @@ interface JournalEntryDisplayProps {
 }
 
 const JournalEntryDisplay = ({ entry }: JournalEntryDisplayProps) => {
+  const moodConfig = getMoodConfig(entry.mood ?? "neutral");
+  const date = new Date(entry.createdAt ?? new Date()).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }
+  );
+
+  const portableTextComponents = {
+    types: {
+      image: ({ value }: { value: any }) => {
+        if(!value?.asset) {
+          return null;
+        }
+
+        const imageUrl = urlFor(value)
+          .width(800)
+          .height(400)
+          .fit("crop")
+          .auto("format")
+          .url()
+        ;
+
+        return (
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.image}
+              contentFit="cover"
+            />
+            {
+              value.caption && (
+                <Text style={styles.imageCaption}>{value.caption}</Text>
+              )
+            }
+          </View>
+        );
+      }
+    },
+    block: {
+      normal: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.paragraph}>{children}</Text>
+      ),
+      h1: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.heading1}>{children}</Text>
+      ),
+      h2: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.heading2}>{children}</Text>
+      ),
+      blockquote: ({ children }: { children: React.ReactNode }) => (
+        <View style={styles.blockquote}>
+          <Text style={styles.blockquoteText}>{children}</Text>
+        </View>
+      )
+    },
+    marks: {
+      strong: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.bold}>{children}</Text>
+      ),
+      em: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.italic}>{children}</Text>
+      ),
+      link: ({ children }: { children: React.ReactNode }) => (
+        <Text style={styles.link}>{children}</Text>
+      )
+    },
+    list: {
+      bullet: ({ children }: { children: React.ReactNode }) => (
+        <View style={styles.bulletList}>{children}</View>
+      ),
+      number: ({ children }: { children: React.ReactNode }) => (
+        <View style={styles.numberedList}>{children}</View>
+      )
+    },
+    listItem: {
+      bullet: ({ children }: { children: React.ReactNode }) => (
+        <View style={styles.listItem}>
+          <Text style={styles.bullet}>•</Text>
+          <View style={styles.listItemContent}>{children}</View>
+        </View>
+      ),
+      number: ({
+        children,
+        index
+      }: {
+        children: React.ReactNode;
+        index: number;
+      }) => (
+        <View style={styles.listItem}>
+          <Text style={styles.bullet}>{index + 1}.</Text>
+          <View style={styles.listItemContent}>{children}</View>
+        </View>
+      )
+    }
+  };
+
   return (
-    <View>
-      <Text>JournalEntryDisplay</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <Text style={styles.date}>{date}</Text>
+          <View style={styles.moodContainer}>
+            <MaterialIcons
+              size={28}
+              name={moodConfig.icon as any}
+              color={moodConfig.color}
+            />
+          </View>
+        </View>
+
+        {entry.title && <Text style={styles.title}>{entry.title}</Text>}
+
+        {
+          entry.aiGeneratedCategory && (
+            <View
+              style={[
+                styles.categoryTag,
+                { backgroundColor: entry.aiGeneratedCategory.color || "#e1e5e9" },
+              ]}
+            >
+              <Text style={styles.categoryText}>
+                {entry.aiGeneratedCategory.title}
+              </Text>
+            </View>
+          )
+        }
+      </View>
+
+      <View style={styles.contentContainer}>
+        <PortableText
+          value={entry.content ?? []}
+          components={portableTextComponents as any}
+        />
+      </View>
     </View>
   )
 }
