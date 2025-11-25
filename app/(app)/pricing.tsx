@@ -1,7 +1,7 @@
-import { View, Text, Platform, StyleSheet } from 'react-native'
+import { View, Text, Platform, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { Colors } from '@/constants/theme'
-import { useAuth } from '@clerk/clerk-expo'
+import { Protect, useAuth } from '@clerk/clerk-expo'
 
 const PricingScreen = () => {
   const { signOut } = useAuth();
@@ -10,11 +10,231 @@ const PricingScreen = () => {
     await signOut();
   }
 
-  return (
-    <View>
-      <Text>PricingScreen</Text>
+  const upgradeContent = (
+    <View style={styles.contentContainer}>
+      <View style={styles.heroSection}>
+        <View style={styles.badgeContainer}>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>PREMIUM PLANS</Text>
+          </View>
+        </View>
+
+        <Text style={styles.title}>Elevate Your Journaling</Text>
+
+        <Text style={styles.subtitle}>
+          Unlock AI-powered insights, advanced analytics, and premium features
+          to transform your journaling experience
+        </Text>
+      </View>
+
+      <View style={styles.pricingSection}>
+        <Text style={styles.sectionTitle}>Choose Your Plan</Text>
+        <View style={styles.pricingContainer}>
+          {
+            Platform.OS === "web" ? (
+              <View style={styles.pricingWrapper}>
+                <PricingTable
+                  newSubscriptionRedirectUrl="http://localhost:8081/plan-changed-success"
+                  appearance={{
+                    variables: {
+                      fontFamily:
+                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontSize: "16px",
+                      fontWeight: {
+                        normal: 400,
+                        medium: 500,
+                        bold: 600,
+                      },
+                    },
+                  }}
+                />
+              </View>
+            ) : (
+              <View style={styles.nativeMessage}>
+                <Text style={styles.nativeMessageIcon}>💳</Text>
+                <Text style={styles.nativeMessageText}>
+                  Please use the web version to manage your subscription
+                </Text>
+              </View>
+            )
+          }
+        </View>
+      </View>
+
+      <View style={styles.featuresSection}>
+        <Text style={styles.featuresTitle}>Everything You Get with Pro</Text>
+        <Text style={styles.featuresSubtitle}>
+          Premium features designed to enhance your journaling
+        </Text>
+
+        <View style={styles.featuresGrid}>
+          {[
+            {
+              icon: "🤖",
+              title: "AI Chat Assistant",
+              description: "Get intelligent insights from your journal entries"
+            },
+            {
+              icon: "📊",
+              title: "Advanced Analytics",
+              description: "Track patterns and trends in your journaling"
+            },
+            {
+              icon: "🔒",
+              title: "Priority Support",
+              description: "Get help when you need it most"
+            },
+            {
+              icon: "☁️",
+              title: "Unlimited Storage",
+              description: "Never worry about space again"
+            },
+            {
+              icon: "🎨",
+              title: "Premium Themes",
+              description: "Customize your experience"
+            },
+            {
+              icon: "🚀",
+              title: "Early Access",
+              description: "Be first to try new features"
+            },
+          ].map((feature, index) => (
+            <View key={index} style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <Text style={styles.featureIcon}>{feature.icon}</Text>
+              </View>
+
+              <Text style={styles.featureTitle}>{feature.title}</Text>
+              <Text style={styles.featureDescription}>
+                {feature.description}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.trustBadge}>
+        <Text style={styles.trustIcon}>🔐</Text>
+        <View style={styles.trustTextContainer}>
+          <Text style={styles.trustTitle}>Secure & Private</Text>
+          <Text style={styles.trustText}>
+            Your data is encrypted and protected. Cancel anytime.
+          </Text>
+        </View>
+      </View>
     </View>
-  )
+  );
+
+  const manageContent = (
+    <View style={styles.contentContainer}>
+      <View style={styles.heroSection}>
+        <View style={styles.badgeContainer}>
+          <View style={styles.proBadge}>
+            <Text style={styles.proBadgeText}>PRO MEMBER</Text>
+          </View>
+        </View>
+
+        <Text style={styles.title}>Manage Your Subscription</Text>
+
+        <Text style={styles.subtitle}>
+          Update your plan, payment method, and billing information
+        </Text>
+      </View>
+
+      {/* User Profile Section */}
+      {
+        Platform.OS === "web" ? (
+          <View style={styles.profileSection}>
+            <View style={styles.profileWrapper}>
+              <UserProfile
+                appearance={{
+                  variables: {
+                    fontFamily:
+                      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  },
+                }}
+              />
+            </View>
+          </View>
+        ) : (
+          <View style={styles.nativeMessage}>
+            <Text style={styles.nativeMessageIcon}>⚙️</Text>
+            <Text style={styles.nativeMessageText}>
+              Please use the web version to manage your subscription settings
+            </Text>
+          </View>
+        )
+      }
+
+      <View style={styles.proFeaturesSection}>
+        <Text style={styles.proFeaturesTitle}>Your Pro Benefits</Text>
+
+        <View style={styles.proBenefitsList}>
+          {
+            [
+              "🤖 AI Chat Assistant",
+              "📊 Advanced Analytics",
+              "🔒 Priority Support",
+              "☁️ Unlimited Storage",
+              "🎨 Premium Themes",
+              "🚀 Early Access to Features",
+            ].map((benefit, index) => (
+              <View key={index} style={styles.proBenefitItem}>
+                <Text style={styles.proBenefitText}>{benefit}</Text>
+              </View>
+            ))
+          }
+        </View>
+      </View>
+
+      <View style={styles.supportBadge}>
+        <Text style={styles.supportIcon}>💬</Text>
+        <View style={styles.supportTextContainer}>
+          <Text style={styles.supportTitle}>Need Help?</Text>
+          <Text style={styles.supportText}>
+            Our priority support team is here for you. Contact us anytime.
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.logoutSection}>
+        <TouchableOpacity 
+          style={styles.logoutButton} 
+          onPress={handleLogout}
+        >
+          <Text style={styles.logoutButtonText}>
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const content = (
+    <Protect 
+      plan="pro" 
+      fallback={upgradeContent}
+    >
+      {manageContent}
+    </Protect>
+  );
+
+  if(Platform.OS === "web") {
+    return (
+      <View style={styles.container}>
+        <div style={{ overflow: "auto", height: "100vh" }}>
+          {content}
+        </div>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container}>
+      {content}
+    </ScrollView>
+  );
 }
 
 export default PricingScreen
