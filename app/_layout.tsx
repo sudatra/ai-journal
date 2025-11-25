@@ -3,7 +3,7 @@ import '../tamagui-web.css'
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { TamaguiProvider } from 'tamagui'
+import { PortalProvider, TamaguiProvider } from 'tamagui'
 
 import { ModalProvider } from '@/context/ModalContext'
 import { Slot } from 'expo-router'
@@ -21,11 +21,13 @@ export default function RootLayout() {
 
       <ClerkProvider tokenCache={tokenCache}>
         <TamaguiProvider config={tamaguiConfig} defaultTheme='light'>
-          <ModalProvider>
-            <ThemeProvider value={DefaultTheme}>
-              <Slot />
-            </ThemeProvider>
-          </ModalProvider>
+          <PortalProvider shouldAddRootHost={true}>
+            <ModalProvider>
+              <ThemeProvider value={DefaultTheme}>
+                <Slot />
+              </ThemeProvider>
+            </ModalProvider>
+          </PortalProvider>
         </TamaguiProvider>
       </ClerkProvider>
     </SafeAreaProvider>
