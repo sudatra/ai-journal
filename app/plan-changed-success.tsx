@@ -1,0 +1,177 @@
+import { View, Text, Platform, StyleSheet, useColorScheme, Linking } from 'react-native'
+import React from 'react'
+import { useUser } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
+import { Colors } from '@/constants/theme';
+
+const PlanChangedSuccessScreen = () => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const { isLoaded } = useUser();
+  const router = useRouter();
+
+  const handleReturn = async () => {
+    if(Platform.OS === "web") {
+      const appUrl = "sanityclerkbillingjournalappexpo://";
+
+      try {
+        await Linking.openURL(appUrl);
+        setTimeout(() => {
+          window.close();
+        }, 500);
+      } 
+      catch {
+        console.log("Could not open app, user might not have it installed");
+      }
+    } 
+    else {
+      router.replace("/");
+    }
+  };
+
+  return (
+    <View>
+      <Text>PlanChangedSuccessScreen</Text>
+    </View>
+  )
+}
+
+export default PlanChangedSuccessScreen
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  userButtonContainer: {
+    position: "absolute",
+    top: Platform.OS === "web" ? 24 : 60,
+    right: 24,
+    zIndex: 10,
+  },
+  returnToAppText: {
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+    marginBottom: 32,
+    fontWeight: "400",
+    color: "#10B981",
+  },
+  successCard: {
+    maxWidth: 440,
+    width: "100%",
+    padding: 40,
+    borderRadius: 24,
+    borderWidth: 1,
+    alignItems: "center",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.12,
+        shadowRadius: 24,
+      },
+      android: {
+        elevation: 8,
+      },
+      web: {
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+      },
+    }),
+  },
+  successIconContainer: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: "#10B981",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#10B981",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+      web: {
+        boxShadow: "0 4px 24px rgba(16, 185, 129, 0.3)",
+      },
+    }),
+  },
+  successIcon: {
+    fontSize: 44,
+    color: "#ffffff",
+    fontWeight: "bold",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "800",
+    marginBottom: 8,
+    textAlign: "center",
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+    marginBottom: 32,
+    fontWeight: "400",
+  },
+  loaderContainer: {
+    paddingVertical: 20,
+  },
+  planBadge: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    backgroundColor: "rgba(16, 185, 129, 0.1)",
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: "rgba(16, 185, 129, 0.2)",
+  },
+  planBadgeText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#10B981",
+  },
+  proBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginBottom: 24,
+    backgroundColor: "transparent",
+    borderWidth: 2,
+  },
+  proBadgeIcon: {
+    fontSize: 18,
+  },
+  proBadgeText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.tint,
+  },
+  returnButton: {
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  returnButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
+});
