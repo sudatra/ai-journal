@@ -1,4 +1,5 @@
 import '../tamagui-web.css'
+import '@/polyfills'
 
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
