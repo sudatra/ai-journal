@@ -1,6 +1,6 @@
-import { View, Text, Platform, StyleSheet, useColorScheme, Linking } from 'react-native'
+import { View, Text, Platform, StyleSheet, useColorScheme, Linking, ActivityIndicator, Pressable } from 'react-native'
 import React from 'react'
-import { useUser } from '@clerk/clerk-expo';
+import { Protect, useUser } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 
@@ -29,9 +29,110 @@ const PlanChangedSuccessScreen = () => {
     }
   };
 
+  const content = (
+    <View style={styles.contentContainer}>
+      <View
+        style={[
+          styles.successCard,
+          {
+            backgroundColor: isDark ? "#1a1a2e" : "#ffffff",
+            borderColor: isDark ? "#2a2a3e" : "#e5e7eb",
+          },
+        ]}
+      >
+        <View style={styles.successIconContainer}>
+          <Text style={styles.successIcon}>✓</Text>
+        </View>
+
+        <Text
+          style={[
+            styles.title,
+            { color: isDark ? Colors.dark.text : Colors.light.text },
+          ]}
+        >
+          Subscription Updated!
+        </Text>
+
+        <Text style={[styles.subtitle, { color: isDark ? "#a0a0a0" : "#666666" }]}>
+          Your subscription has been successfully changed
+        </Text>
+
+        {
+          !isLoaded ? (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator 
+                size="large" 
+                color={Colors.light.tint} 
+              />
+            </View>
+          ) : (
+            <Protect
+              plan="pro"
+              fallback={
+                <View style={styles.planBadge}>
+                  <Text style={styles.planBadgeText}>Free Plan</Text>
+                </View>
+              }
+            >
+              <View style={styles.planBadge}>
+                <Text style={styles.planBadgeText}>Pro Plan</Text>
+              </View>
+            </Protect>
+          )
+        }
+
+        <Text style={styles.returnToAppText}>
+          You can now close this page & return to the app to continue using your
+          PRO Benefits!
+        </Text>
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.returnButton,
+            {
+              opacity: pressed ? 0.8 : 1,
+              backgroundColor: "#10B981",
+            },
+          ]}
+          onPress={handleReturn}
+        >
+          <Text style={styles.returnButtonText}>Return to App</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+
+  if(Platform.OS === "web") {
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: isDark
+              ? Colors.dark.background
+              : Colors.light.background,
+          },
+        ]}
+      >
+        <div style={{ display: "flex", minHeight: "100vh" }}>
+          {content}
+        </div>
+      </View>
+    );
+  }
+
   return (
-    <View>
-      <Text>PlanChangedSuccessScreen</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDark
+            ? Colors.dark.background
+            : Colors.light.background,
+        },
+      ]}
+    >
+      {content}
     </View>
   )
 }
